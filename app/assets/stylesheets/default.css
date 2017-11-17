@@ -1,0 +1,4 @@
+@page{
+  margin: 0; /* disable default header/footer texts */
+  size: 'A4'; /* override default US letter size */
+}
