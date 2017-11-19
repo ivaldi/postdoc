@@ -15,6 +15,10 @@ module Postdoc
     htmlfile.write(render_to_string(options))
     htmlfile.flush
 
+    if options[:debug]
+      `chrome file://#{htmlfile.path}`
+    end
+
     `chrome --headless --disable-gpu --print-to-pdf=#{pdffile.path} file://#{htmlfile.path}`
 
     htmlfile.close
