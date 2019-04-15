@@ -13,4 +13,5 @@ Gem::Specification.new do |s|
   s.files = Dir['{app,config,db,lib}/**/*', 'LICENSE', 'Rakefile']
 
   s.add_dependency 'rails', '>= 4.0.0', '< 6'
+  s.add_dependency 'chrome_remote', '>= 0.2.0'
 end
