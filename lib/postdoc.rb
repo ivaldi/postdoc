@@ -1,4 +1,5 @@
 require 'postdoc/postdoc_view_helper'
+require 'chrome_remote'
 
 module Postdoc
 
@@ -9,25 +10,40 @@ module Postdoc
   end
 
   ActionController::Renderers.add :pdf do |filename, options|
-    pdffile = Tempfile.new(['output', '.pdf'])
-    htmlfile = Tempfile.new(['input', '.html'])
+    htmlfile = Tempfile.new ['input', '.html']
 
-    htmlfile.write(render_to_string(options))
+    htmlfile.write render_to_string(options)
     htmlfile.flush
 
-    if options[:debug]
-      `chrome file://#{htmlfile.path}`
+    # random port at 1025 or higher
+    random_port = 1024 + Random.rand(65535 - 1024)
+
+    pid = Process.spawn "chrome --remote-debugging-port=#{random_port} --headless"
+
+    # FIXME
+    sleep 1
+
+    begin
+      chrome = ChromeRemote.client port: random_port
+      chrome.send_cmd 'Page.enable'
+
+      chrome.send_cmd 'Page.navigate', url: "file://#{htmlfile.path}"
+      chrome.wait_for 'Page.loadEventFired'
+
+      response = chrome.send_cmd 'Page.printToPDF', {
+        landscape: options[:landscape] || false,
+        printBackground: true,
+        headerTemplate: options[:header_template] || '',
+        footerTemplate: options[:footer_template] || '',
+      }
+      result = Base64.decode64 response['data']
+    ensure
+      Process.kill 'KILL', pid
+      Process.wait pid
+
+      htmlfile.close
+      htmlfile.unlink
     end
-
-    `chrome --headless --disable-gpu --print-to-pdf=#{pdffile.path} file://#{htmlfile.path}`
-
-    htmlfile.close
-    htmlfile.unlink
-
-    result = pdffile.read
-
-    pdffile.unlink
-    pdffile.close
 
     result
   end
