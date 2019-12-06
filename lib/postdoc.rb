@@ -30,14 +30,20 @@ module Postdoc
       chrome.send_cmd 'Page.navigate', url: "file://#{htmlfile.path}"
       chrome.wait_for 'Page.loadEventFired'
 
-      # FIXME
-      sleep 2
+      if options[:header_template].present? || options[:footer_template].present?
+        displayHeaderFooter = true
+      else
+        displayHeaderFooter = false
+      end
 
       response = chrome.send_cmd 'Page.printToPDF', {
         landscape: options[:landscape] || false,
         printBackground: true,
         marginTop: options[:margin_top] || 1,
-        marginBottom: options[:margin_bottom] || 1
+        marginBottom: options[:margin_bottom] || 1,
+        displayHeaderFooter: displayHeaderFooter,
+        headerTemplate: options[:header_template],
+        footerTemplate: options[:footer_template]
       }
       result = Base64.decode64 response['data']
     ensure
