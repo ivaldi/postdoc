@@ -1,18 +1,14 @@
-require 'postdoc/postdoc_view_helper'
 require 'chrome_remote'
 
 module Postdoc
-
-  class PostdocRailtie < Rails::Railtie
-    initializer 'postdoc.register' do |_app|
-      ActionView::Base.send :include, PostdocViewHelper
-    end
+  ActionController::Renderers.add :pdf do |filename, options|
+    render_from_string_to_pdf render_to_string(options), options
   end
 
-  ActionController::Renderers.add :pdf do |filename, options|
+  def self.render_from_string(string, options)
     htmlfile = Tempfile.new ['input', '.html']
 
-    htmlfile.write render_to_string(options)
+    htmlfile.write string
     htmlfile.flush
 
     # random port at 1025 or higher
