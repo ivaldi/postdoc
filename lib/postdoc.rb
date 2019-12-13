@@ -2,7 +2,7 @@ require 'chrome_remote'
 
 module Postdoc
   ActionController::Renderers.add :pdf do |filename, options|
-    render_from_string_to_pdf render_to_string(options), options
+    Postdoc.render_from_string render_to_string(options), options
   end
 
   def self.render_from_string(string, options)
@@ -38,8 +38,8 @@ module Postdoc
         marginTop: options[:margin_top] || 1,
         marginBottom: options[:margin_bottom] || 1,
         displayHeaderFooter: displayHeaderFooter,
-        headerTemplate: options[:header_template],
-        footerTemplate: options[:footer_template]
+        headerTemplate: options[:header_template] || '',
+        footerTemplate: options[:footer_template] || ''
       }
       result = Base64.decode64 response['data']
     ensure

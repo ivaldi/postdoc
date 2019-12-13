@@ -1,9 +1,9 @@
 PATH
   remote: .
   specs:
-    postdoc (0.2.0)
+    postdoc (0.2.2)
       chrome_remote (>= 0.2.0)
-      rails (>= 4.0.0, < 7)
+      rails (>= 4.0.0, < 6.1)
 
 GEM
   remote: https://rubygems.org/
@@ -63,9 +63,9 @@ GEM
       minitest (~> 5.1)
       tzinfo (~> 1.1)
       zeitwerk (~> 2.2)
-    builder (3.2.3)
+    builder (3.2.4)
     byebug (11.0.1)
-    chrome_remote (0.2.0)
+    chrome_remote (0.3.0)
       websocket-driver (~> 0.6)
     concurrent-ruby (1.1.5)
     crass (1.0.5)
