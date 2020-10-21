@@ -1,7 +1,9 @@
+# frozen_string_literal: true
+
 require 'chrome_remote'
 
 module Postdoc
-  ActionController::Renderers.add :pdf do |filename, options|
+  ActionController::Renderers.add :pdf do |_filename, options|
     Postdoc.render_from_string render_to_string(options), options
   end
 
@@ -11,18 +13,19 @@ module Postdoc
     htmlfile.write string
     htmlfile.flush
 
-    # random port at 1025 or higher
-    random_port = 1024 + Random.rand(65535 - 1024)
-
-    pid = Process.spawn "chrome --remote-debugging-port=#{random_port} --headless"
+    if options[:client].nil?
+      # random port at 1025 or higher
+      random_port = 1024 + Random.rand(65_535 - 1024)
+      pid = Process.spawn "chrome --remote-debugging-port=#{random_port} --headless"
+    end
 
     # FIXME
     sleep 1
 
     begin
-      chrome = ChromeRemote.client port: random_port
-      chrome.send_cmd 'Page.enable'
+      chrome = options[:client].nil? ? ChromeRemote.client(port: random_port) : options[:client]
 
+      chrome.send_cmd 'Page.enable'
       chrome.send_cmd 'Page.navigate', url: "file://#{htmlfile.path}"
       chrome.wait_for 'Page.loadEventFired'
 
@@ -43,8 +46,12 @@ module Postdoc
       }
       result = Base64.decode64 response['data']
     ensure
-      Process.kill 'KILL', pid
-      Process.wait pid
+      if options[:client].nil?
+        Process.kill 'KILL', pid
+        Process.wait pid
+      else
+        chrome.send_cmd 'Page.close'
+      end
 
       htmlfile.close
       htmlfile.unlink
