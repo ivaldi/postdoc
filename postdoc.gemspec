@@ -1,8 +1,8 @@
-$:.push File.expand_path('../lib', __FILE__)
+$:.push File.expand_path('lib', __dir__)
 
 Gem::Specification.new do |s|
   s.name        = 'postdoc'
-  s.version     = '0.2.4'
+  s.version     = '0.3.0'
   s.authors     = ['Frank Groeneveld']
   s.email       = ['frank@ivaldi.nl']
   s.homepage    = 'https://github.com/ivaldi/postdoc'
@@ -12,6 +12,6 @@ Gem::Specification.new do |s|
 
   s.files = Dir['{app,config,db,lib}/**/*', 'LICENSE', 'Rakefile']
 
-  s.add_dependency 'rails', '>= 4.0.0', '< 6.1'
   s.add_dependency 'chrome_remote', '>= 0.2.0'
+  s.add_dependency 'rails', '>= 4.0.0', '< 6.1'
 end
