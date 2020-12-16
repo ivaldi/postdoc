@@ -18,9 +18,19 @@ module Postdoc
       random_port = 1024 + Random.rand(65_535 - 1024)
       pid = Process.spawn "chrome --remote-debugging-port=#{random_port} --headless"
     end
-
-    # FIXME
-    sleep 1
+    
+    success = false
+    10.times do
+      begin
+        TCPSocket.new('localhost', random_port)
+        success = true 
+        break
+      rescue
+      end
+      sleep 1
+    end
+    
+    return unless success
 
     begin
       chrome = options[:client].nil? ? ChromeRemote.client(port: random_port) : options[:client]
