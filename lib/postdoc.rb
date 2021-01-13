@@ -8,7 +8,7 @@ module Postdoc
   end
 
   def self.render_from_string(string, options)
-    htmlfile = Tempfile.new ['input', '.html']
+    htmlfile = Tempfile.new ['input', '.html'], Rails.root.join('tmp')
 
     htmlfile.write string
     htmlfile.flush
