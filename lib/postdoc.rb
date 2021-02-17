@@ -1,72 +1,24 @@
 # frozen_string_literal: true
 
-require 'chrome_remote'
+require 'postdoc/chrome_process'
+require 'postdoc/client'
+require 'postdoc/html_document'
 
 module Postdoc
   ActionController::Renderers.add :pdf do |_filename, options|
     Postdoc.render_from_string render_to_string(options), options
   end
 
-  def self.render_from_string(string, options)
-    htmlfile = Tempfile.new ['input', '.html'], Rails.root.join('tmp')
+  def self.render_from_string(options)
+    chrome_process = ChromeProcess.new(port: options[:chrome_debugging_port])
 
-    htmlfile.write string
-    htmlfile.flush
+    # Try and connect to the chrome process a for ten second before giving up.
+    10.times { chrome_process.alive? || sleep(1) }
 
-    if options[:client].nil?
-      # random port at 1025 or higher
-      random_port = 1024 + Random.rand(65_535 - 1024)
-      pid = Process.spawn "chrome --remote-debugging-port=#{random_port} --headless"
-    end
-    
-    success = false
-    10.times do
-      begin
-        TCPSocket.new('localhost', random_port)
-        success = true 
-        break
-      rescue
-      end
-      sleep 1
-    end
-    
-    return unless success
-
-    begin
-      chrome = options[:client].nil? ? ChromeRemote.client(port: random_port) : options[:client]
-
-      chrome.send_cmd 'Page.enable'
-      chrome.send_cmd 'Page.navigate', url: "file://#{htmlfile.path}"
-      chrome.wait_for 'Page.loadEventFired'
-
-      if options[:header_template].present? || options[:footer_template].present?
-        displayHeaderFooter = true
-      else
-        displayHeaderFooter = false
-      end
-
-      response = chrome.send_cmd 'Page.printToPDF', {
-        landscape: options[:landscape] || false,
-        printBackground: true,
-        marginTop: options[:margin_top] || 1,
-        marginBottom: options[:margin_bottom] || 1,
-        displayHeaderFooter: displayHeaderFooter,
-        headerTemplate: options[:header_template] || '',
-        footerTemplate: options[:footer_template] || ''
-      }
-      result = Base64.decode64 response['data']
-    ensure
-      if options[:client].nil?
-        Process.kill 'KILL', pid
-        Process.wait pid
-      else
-        chrome.send_cmd 'Page.close'
-      end
-
-      htmlfile.close
-      htmlfile.unlink
-    end
-
-    result
+    client = chrome_process.client
+    client.print_pfd_from_html HTMLFile.new(string)
+  ensure
+    chrome_process.kill
+    html_file.cleanup
   end
 end
