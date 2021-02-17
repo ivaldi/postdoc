@@ -10,7 +10,7 @@ module Postdoc
     end
 
     def alive?
-      @alive ||= test_socket
+      @alive ||= test_socket!
     rescue
       false
     end
@@ -26,7 +26,7 @@ module Postdoc
 
     private
 
-    def test_socket
+    def test_socket!
       TCPSocket.new('localhost', random_port)
     end
   end

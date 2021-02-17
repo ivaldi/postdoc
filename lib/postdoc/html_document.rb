@@ -1,19 +1,24 @@
 # frozen_string_literal: true
 
+require 'rails'
+
 module Postdoc
   class HTMLDocument
     attr_accessor :file
 
-    def initialize(content, path: '/tmp' )
-      @file = Tempfile.new ['input', '.'], path
+    delegate :path, to: :file
 
-      @file.write content
-      @file.flush
+    def initialize(content, path: nil)
+      path ||= Rails.root&.join('tmp') || '/tmp'
+      @file = Tempfile.new ['input', '.html'], path
+
+      file.write content
+      file.flush
     end
 
     def cleanup
-      @file.close
-      @file.unlink
+      file.close
+      file.unlink
     end
   end
 end

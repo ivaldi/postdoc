@@ -14,4 +14,5 @@ Gem::Specification.new do |s|
 
   s.add_dependency 'chrome_remote', '>= 0.2.0'
   s.add_dependency 'rails', '>= 4.0.0', '< 6.1'
+  s.add_development_dependency 'mocha'
 end

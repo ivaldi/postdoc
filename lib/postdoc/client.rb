@@ -9,20 +9,25 @@ module Postdoc
       @client = ChromeRemote.client(port: port)
     end
 
-    def print_html_file_as_pdf(file, **options)
+    def print_pdf_from_html(file_path,
+          header_template: false,
+          footer_template: false,
+          **options)
+      client.send_cmd "Network.enable"
       client.send_cmd 'Page.enable'
-      client.send_cmd 'Page.navigate', url: "file://#{html_file.path}"
+      client.send_cmd 'Page.navigate', url: "file://#{file_path}"
       client.wait_for 'Page.loadEventFired'
 
-      response = chrome.send_cmd 'Page.printToPDF', {
+      response = client.send_cmd 'Page.printToPDF', {
         landscape: options[:landscape] || false,
         printBackground: true,
         marginTop: options[:margin_top] || 1,
         marginBottom: options[:margin_bottom] || 1,
-        displayHeaderFooter: header_template || footer_template,
-        headerTemplate: options[:header_template] || '',
-        footerTemplate: options[:footer_template] || ''
+        displayHeaderFooter: !(header_template || footer_template),
+        headerTemplate: header_template || '',
+        footerTemplate: footer_template || ''
       }
+
       Base64.decode64 response['data']
     end
   end
