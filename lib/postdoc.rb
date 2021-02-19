@@ -11,15 +11,12 @@ module Postdoc
   end
 
   def self.render_from_string(content, **options)
-    chrome_process = ChromeProcess.new(**options)
-
-    # Try and connect to the chrome process a for ten second before giving up.
-    10.times { chrome_process.alive? || sleep(1) }
-    client = chrome_process.client
+    server = ChromeProcess.new(**options)
     html_file = HTMLDocument.new(content, **options)
-    client.print_pdf_from_html(html_file.path, **options)
+    server.client
+        .print_pdf_from_html(html_file.path, **options)
   ensure
-    chrome_process.kill
+    server.kill
     html_file.cleanup
   end
 end

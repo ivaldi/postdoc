@@ -7,31 +7,41 @@ class PostdocTest < ActiveSupport::TestCase
   end
 
   class ClientTest < ActiveSupport::TestCase
+    def server
+      @server ||= Postdoc::ChromeProcess.new
+    end
+
     def subject
-      @subject ||= Postdoc::Client.new('1234')
+      @subject ||= Postdoc::Client.new(server.port)
     end
 
     test 'can initialize' do
       assert subject
+    ensure
+      server.kill
     end
 
     test 'responds to #print_pdf_from_html' do
       assert_respond_to subject, :print_pdf_from_html
+    ensure
+      server.kill
     end
   end
 
   class ChromeProcessTest < ActiveSupport::TestCase
     def subject
-      @subject ||= Postdoc::ChromeProcess.new(port: 9222)
+      @subject ||= Postdoc::ChromeProcess.new
     end
 
     test 'it can initialize' do
       assert subject
+    ensure
       subject.kill
     end
 
     test 'it creates a process' do
       assert Process.getpgid(subject.pid)
+    ensure
       subject.kill
     end
 
@@ -44,12 +54,16 @@ class PostdocTest < ActiveSupport::TestCase
 
     test '#client returns a client' do
       assert_instance_of Postdoc::Client, subject.client
+    ensure
       subject.kill
     end
 
     test 'it uses a random value as default' do
       Random.expects(:rand).returns(4200)
-      assert_equal 4200, Postdoc::ChromeProcess.new.port
+      server = Postdoc::ChromeProcess.new
+      assert_equal 4200, server.port
+    ensure
+      server.kill
     end
   end
 

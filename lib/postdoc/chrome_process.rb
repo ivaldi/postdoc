@@ -3,10 +3,10 @@ module Postdoc
   class ChromeProcess
     attr_reader :pid, :port
 
-    def initialize(port: Random.rand(65_535 - 1024))
+    def initialize(port: Random.rand(65_535 - 1024), **_options)
       @port = port
       @pid = Process.spawn "chrome --remote-debugging-port=#{port} --headless",
-          out: File::NULL
+          out: File::NULL, err: File::NULL
     end
 
     def alive?
@@ -27,7 +27,7 @@ module Postdoc
     private
 
     def test_socket!
-      TCPSocket.new('localhost', random_port)
+      TCPSocket.new('localhost', port)
     end
   end
 end
