@@ -7,13 +7,15 @@ module Postdoc
     attr_accessor :client
 
     def initialize(port)
-      20.times { setup_connection_or_wait(port) && break }
+      @port = port
+      100.times { setup_connection_or_wait && break }
     end
 
     def print_pdf_from_html(file_path,
         header_template: false,
         footer_template: false,
         **options)
+
       client.send_cmd 'Page.enable'
       client.send_cmd 'Page.navigate', url: "file://#{file_path}"
       client.wait_for 'Page.loadEventFired'
@@ -33,12 +35,12 @@ module Postdoc
 
     private
 
-    def setup_connection_or_wait(port)
-      @client = ChromeRemote.client(port: port)
-      @client.send_cmd "Network.enable"
+    def setup_connection_or_wait
+      @client = ChromeRemote.client(port: @port)
       true
     rescue
-      sleep 0.2
+      sleep(0.1)
+      false
     end
   end
 end
