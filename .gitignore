@@ -7,3 +7,6 @@ test/dummy/log/*.log
 test/dummy/tmp/
 *.swp
 .DS_Store
+
+# Test output.
+test.pdf
