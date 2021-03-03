@@ -8,7 +8,7 @@ module Postdoc
 
     delegate :path, to: :file
 
-    def initialize(content, path: nil, **options)
+    def initialize(content, path: nil, **_options)
       path ||= Rails.root&.join('tmp') || '/tmp'
       @file = Tempfile.new ['input', '.html'], path
 
