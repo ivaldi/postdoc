@@ -9,6 +9,7 @@ module Postdoc
     def initialize(port)
       @port = port
       100.times { setup_connection_or_wait && break }
+      raise 'ChromeClient couldn\'t launch' if @client.blank?
     end
 
     def print_pdf_from_html(file_path,
@@ -38,7 +39,7 @@ module Postdoc
     def setup_connection_or_wait
       @client = ChromeRemote.client(port: @port)
       true
-    rescue
+    rescue Errno::ECONNREFUSED
       sleep(0.1)
       false
     end

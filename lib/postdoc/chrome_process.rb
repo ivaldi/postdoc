@@ -1,4 +1,5 @@
 # frozen_string_literal: true
+
 module Postdoc
   class ChromeProcess
     attr_reader :pid, :port
@@ -11,7 +12,7 @@ module Postdoc
 
     def alive?
       @alive ||= test_socket!
-    rescue
+    rescue Errno::ECONNREFUSED
       false
     end
 
