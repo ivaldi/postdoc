@@ -26,6 +26,8 @@ module Postdoc
         printBackground: true,
         marginTop: options[:margin_top] || 1,
         marginBottom: options[:margin_bottom] || 1,
+        marginLeft: options[:margin_left] || 1,
+        marginRight: options[:margin_right] || 1,
         displayHeaderFooter: !!(header_template || footer_template),
         headerTemplate: header_template || '',
         footerTemplate: footer_template || ''
