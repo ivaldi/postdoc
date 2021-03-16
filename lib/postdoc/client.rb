@@ -41,7 +41,7 @@ module Postdoc
     def setup_connection_or_wait
       @client = ChromeRemote.client(port: @port)
       true
-    rescue Errno::ECONNREFUSED
+    rescue Errno::EHOSTUNREACH, Errno::ECONNREFUSED
       sleep(0.1)
       false
     end
