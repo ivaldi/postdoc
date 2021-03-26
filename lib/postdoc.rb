@@ -19,4 +19,17 @@ module Postdoc
     server.kill
     html_file.cleanup
   end
+
+  def self.render_batch(webpages, **options)
+    server = ChromeProcess.new(**options)
+    docs = webpages.map { |content| HTMLDocument.new(content, **options) }
+    docs.map do |doc|
+      server.client
+        .print_pdf_from_html(doc.path, **options)
+    end
+
+  ensure
+    server.kill
+    docs.each(&:cleanup)
+  end
 end

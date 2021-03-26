@@ -1,7 +1,7 @@
 PATH
   remote: .
   specs:
-    postdoc (0.3.2)
+    postdoc (0.3.3)
       chrome_remote (>= 0.2.0)
       rails (>= 4.0.0, < 6.1)
 

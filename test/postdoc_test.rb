@@ -6,6 +6,10 @@ class PostdocTest < ActiveSupport::TestCase
     assert_respond_to Postdoc, :render_from_string
   end
 
+  test 'responds to #render_batch' do
+    assert_respond_to Postdoc, :render_batch
+  end
+
   class ClientTest < ActiveSupport::TestCase
     def server
       @server ||= Postdoc::ChromeProcess.new
