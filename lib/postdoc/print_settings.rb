@@ -2,9 +2,16 @@ module Postdoc
   # Different prints require different settings. This class is used instead of
   # passing options arguments throughout all of the code.
   class PrintSettings
-    def initialize(header_template: '', footer_template: '',
-        landscape: false, print_background: true, margin_top: 1,
-        margin_left: 1, margin_right: 1, margin_bottom: 1)
+    def initialize(
+        header_template: '',
+        footer_template: '',
+        landscape: false,
+        print_background: true,
+        margin_top: 1,
+        margin_bottom: 1,
+        margin_left: 1,
+        margin_right: 1
+    )
       @header_template = header_template
       @footer_template = footer_template
       @landscape = landscape

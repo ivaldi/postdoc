@@ -13,25 +13,15 @@ module Postdoc
   end
 
   def self.render_from_string(content, **options)
+    print_settings = PrintSettings.new(**options)
     server = ChromeProcess.new(**options)
     html_file = HTMLDocument.new(content)
     server.client
-        .print_pdf_from_html(html_file.path, **options)
+        .print_pdf_from_html(html_file.path,
+            settings: print_settings)
   ensure
     server.kill
     html_file.cleanup
-  end
-
-  def self.render_batch(webpages, **options)
-    server = ChromeProcess.new(**options)
-    docs = webpages.map { |content| HTMLDocument.new(content, **options) }
-    docs.map do |doc|
-      server.client
-        .print_pdf_from_html(doc.path, **options)
-    end
-  ensure
-    server.kill
-    docs.each(&:cleanup)
   end
 
   # A clean and easy way to render a batch:
@@ -41,8 +31,8 @@ module Postdoc
   # with_footer = Postdoc::PrintSettings.new(footer_template: footer_template)
 
   # result = Postdoc.batch do |batch|
-  #   batch.add doc1
-  #   batch.add doc2, settings: with_footer
+  #   batch.add_document doc1
+  #   batch.add_document doc2, settings: with_footer
   # end
   # ```
   def self.batch(batch: Batch.new)
