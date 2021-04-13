@@ -9,6 +9,7 @@ module Postdoc
     def initialize(port)
       @port = port
       100.times { setup_connection_or_wait && break }
+      raise 'ChromeClient couldn\'t launch' if @client.blank?
     end
 
     def print_pdf_from_html(file_path,
@@ -25,6 +26,8 @@ module Postdoc
         printBackground: true,
         marginTop: options[:margin_top] || 1,
         marginBottom: options[:margin_bottom] || 1,
+        marginLeft: options[:margin_left] || 1,
+        marginRight: options[:margin_right] || 1,
         displayHeaderFooter: !!(header_template || footer_template),
         headerTemplate: header_template || '',
         footerTemplate: footer_template || ''
@@ -38,7 +41,7 @@ module Postdoc
     def setup_connection_or_wait
       @client = ChromeRemote.client(port: @port)
       true
-    rescue
+    rescue Exception
       sleep(0.1)
       false
     end
