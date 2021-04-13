@@ -1,6 +1,7 @@
 # frozen_string_literal: true
 
 module Postdoc
+  # Spins up a Chrome process.
   class ChromeProcess
     attr_reader :pid, :port
 

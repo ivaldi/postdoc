@@ -93,4 +93,8 @@ class PostdocTest < ActiveSupport::TestCase
       assert_not File.file?(file_path)
     end
   end
+
+  class Job
+
+  end
 end
