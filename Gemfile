@@ -12,4 +12,3 @@ gemspec
 
 gem 'actionpack'
 gem 'rails'
-gem 'byebug'

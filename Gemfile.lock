@@ -1,7 +1,7 @@
 PATH
   remote: .
   specs:
-    postdoc (0.3.6)
+    postdoc (0.3.7)
       chrome_remote (>= 0.2.0)
       rails (>= 4.0.0, < 6.1)
 
@@ -64,7 +64,6 @@ GEM
       tzinfo (~> 1.1)
       zeitwerk (~> 2.2, >= 2.2.2)
     builder (3.2.4)
-    byebug (11.1.3)
     chrome_remote (0.3.0)
       websocket-driver (~> 0.6)
     concurrent-ruby (1.1.8)
@@ -143,7 +142,6 @@ PLATFORMS
 
 DEPENDENCIES
   actionpack
-  byebug
   mocha
   postdoc!
   rails
