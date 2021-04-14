@@ -15,7 +15,6 @@ bundle install
 Now you can render a pdf from a string that contains the data from a HTML file in the following way:
 
 
-
 ## Handy links:
 - [ChromeRemote](https://github.com/cavalle/chrome_remote) is gives us a client to talk to chrome.
 
@@ -35,3 +34,10 @@ For Mac users with an `No such file or directory - chrome` exception, use the fo
 ```
 cp bin/chrome /usr/local/bin/chrome
 ```
+
+## TODO
+Refactor all instances of string to stringIO for better future interop with
+files.
+
+
+
