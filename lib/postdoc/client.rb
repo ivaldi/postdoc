@@ -23,16 +23,20 @@ module Postdoc
       client.wait_for 'Page.loadEventFired'
 
       response = client.send_cmd 'Page.printToPDF', settings.to_cmd
+      
+      client.send_cmd 'Browser.close'
 
       Base64.decode64 response['data']
     end
-
 
     def print_document(file_path, settings: PrintSettings.new)
       client.send_cmd 'Page.enable'
       client.send_cmd 'Page.navigate', url: "file://#{file_path}"
       client.wait_for 'Page.loadEventFired'
       response = client.send_cmd 'Page.printToPDF', settings.to_cmd
+
+      client.send_cmd 'Browser.close'
+
       Base64.decode64 response['data']
     end
 
@@ -41,7 +45,7 @@ module Postdoc
     def setup_connection_or_wait
       @client = ChromeRemote.client(port: @port)
       true
-    rescue Exception
+    rescue
       sleep(0.1)
       false
     end
