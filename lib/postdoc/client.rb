@@ -3,6 +3,7 @@
 require 'chrome_remote'
 
 module Postdoc
+
   class Client
     attr_accessor :client
 
@@ -12,26 +13,27 @@ module Postdoc
       raise 'ChromeClient couldn\'t launch' if @client.blank?
     end
 
+    # We should move away from passing options like this and collect them in
+    # the prinbt settings.
     def print_pdf_from_html(file_path,
-        header_template: false,
-        footer_template: false,
-        **options)
+        settings: PrintSettings.new)
 
       client.send_cmd 'Page.enable'
       client.send_cmd 'Page.navigate', url: "file://#{file_path}"
       client.wait_for 'Page.loadEventFired'
 
-      response = client.send_cmd 'Page.printToPDF', {
-        landscape: options[:landscape] || false,
-        printBackground: true,
-        marginTop: options[:margin_top] || 1,
-        marginBottom: options[:margin_bottom] || 1,
-        marginLeft: options[:margin_left] || 1,
-        marginRight: options[:margin_right] || 1,
-        displayHeaderFooter: !!(header_template || footer_template),
-        headerTemplate: header_template || '',
-        footerTemplate: footer_template || ''
-      }
+      response = client.send_cmd 'Page.printToPDF', settings.to_cmd
+      
+      client.send_cmd 'Browser.close'
+
+      Base64.decode64 response['data']
+    end
+
+    def print_document(file_path, settings: PrintSettings.new)
+      client.send_cmd 'Page.enable'
+      client.send_cmd 'Page.navigate', url: "file://#{file_path}"
+      client.wait_for 'Page.loadEventFired'
+      response = client.send_cmd 'Page.printToPDF', settings.to_cmd
 
       client.send_cmd 'Browser.close'
 
