@@ -20,6 +20,9 @@ module Postdoc
         .print_pdf_from_html(html_file.path,
             settings: print_settings)
   ensure
+    if server.client.client.present?
+      server.client.client.send_cmd 'Browser.close'
+    end
     server.kill
     html_file.cleanup
   end
@@ -41,6 +44,9 @@ module Postdoc
       server = ChromeProcess.new
       batch.result(server.client)
     ensure
+      if server.client.client.present?
+        server.client.client.send_cmd 'Browser.close'
+      end
       server.kill
       batch.cleanup
     end

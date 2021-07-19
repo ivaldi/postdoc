@@ -23,8 +23,6 @@ module Postdoc
       client.wait_for 'Page.loadEventFired'
 
       response = client.send_cmd 'Page.printToPDF', settings.to_cmd
-      
-      client.send_cmd 'Browser.close'
 
       Base64.decode64 response['data']
     end
@@ -34,8 +32,6 @@ module Postdoc
       client.send_cmd 'Page.navigate', url: "file://#{file_path}"
       client.wait_for 'Page.loadEventFired'
       response = client.send_cmd 'Page.printToPDF', settings.to_cmd
-
-      client.send_cmd 'Browser.close'
 
       Base64.decode64 response['data']
     end
