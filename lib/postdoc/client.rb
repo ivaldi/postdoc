@@ -33,6 +33,8 @@ module Postdoc
         footerTemplate: footer_template || ''
       }
 
+      client.send_cmd 'Browser.close'
+
       Base64.decode64 response['data']
     end
 
@@ -41,7 +43,7 @@ module Postdoc
     def setup_connection_or_wait
       @client = ChromeRemote.client(port: @port)
       true
-    rescue Exception
+    rescue
       sleep(0.1)
       false
     end
