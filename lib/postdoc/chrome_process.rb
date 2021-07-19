@@ -17,8 +17,10 @@ module Postdoc
     end
 
     def kill
-      Process.kill 'KILL', pid
+      Process.kill 'INT', pid
       Process.wait pid
+    rescue
+      true
     end
 
     def client
