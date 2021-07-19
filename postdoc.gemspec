@@ -2,7 +2,7 @@ $:.push File.expand_path('lib', __dir__)
 
 Gem::Specification.new do |s|
   s.name        = 'postdoc'
-  s.version     = '0.3.7'
+  s.version     = '0.3.8'
   s.authors     = ['Frank Groeneveld']
   s.email       = ['frank@ivaldi.nl']
   s.homepage    = 'https://github.com/ivaldi/postdoc'
