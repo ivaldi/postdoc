@@ -9,7 +9,7 @@ require 'postdoc/batch'
 
 module Postdoc
   ActionController::Renderers.add :pdf do |_filename, options|
-    Postdoc.render_from_string render_to_string(options), options
+    Postdoc.render_from_string render_to_string(options), &options
   end
 
   def self.render_from_string(content, **options)
