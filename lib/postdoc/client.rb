@@ -22,6 +22,9 @@ module Postdoc
       client.send_cmd 'Page.navigate', url: "file://#{file_path}"
       client.wait_for 'Page.loadEventFired'
 
+      # prevent race condition
+      sleep 0.1 if settings.slow_pc
+
       response = client.send_cmd 'Page.printToPDF', settings.to_cmd
 
       Base64.decode64 response['data']
@@ -31,6 +34,10 @@ module Postdoc
       client.send_cmd 'Page.enable'
       client.send_cmd 'Page.navigate', url: "file://#{file_path}"
       client.wait_for 'Page.loadEventFired'
+
+      # prevent race condition
+      sleep 0.1 if settings.slow_pc
+
       response = client.send_cmd 'Page.printToPDF', settings.to_cmd
 
       Base64.decode64 response['data']

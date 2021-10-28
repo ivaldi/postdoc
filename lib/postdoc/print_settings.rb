@@ -2,6 +2,9 @@ module Postdoc
   # Different prints require different settings. This class is used instead of
   # passing options arguments throughout all of the code.
   class PrintSettings
+
+    attr_accessor :slow_pc
+
     def initialize(
         header_template: '',
         footer_template: '',
@@ -10,7 +13,8 @@ module Postdoc
         margin_top: 1,
         margin_bottom: 1,
         margin_left: 1,
-        margin_right: 1
+        margin_right: 1,
+        slow_pc: false
     )
       @header_template = header_template
       @footer_template = footer_template
@@ -20,6 +24,7 @@ module Postdoc
       @margin_bottom = margin_bottom
       @margin_left = margin_left
       @margin_right = margin_right
+      @slow_pc = slow_pc
     end
 
     def to_cmd
