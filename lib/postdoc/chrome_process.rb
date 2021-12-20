@@ -5,7 +5,7 @@ module Postdoc
   class ChromeProcess
     attr_reader :pid, :port
 
-    def initialize(port: Random.rand(65_535 - 1024), **_options)
+    def initialize(port: Random.rand(1025..65535), **_options)
       @port = port
       @pid = Process.spawn "chrome --remote-debugging-port=#{port} --headless",
           out: File::NULL, err: File::NULL
