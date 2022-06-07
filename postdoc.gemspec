@@ -13,6 +13,6 @@ Gem::Specification.new do |s|
   s.files = Dir['{app,config,db,lib}/**/*', 'LICENSE', 'Rakefile']
 
   s.add_dependency 'chrome_remote', '>= 0.2.0'
-  s.add_dependency 'rails', '>= 4.0.0', '< 7.0'
+  s.add_dependency 'rails', '>= 4.0.0', '< 7.1'
   s.add_development_dependency 'mocha'
 end
