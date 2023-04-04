@@ -7,7 +7,7 @@ module Postdoc
 
     def initialize(port: Random.rand(1025..65535), **_options)
       @port = port
-      @pid = Process.spawn "chrome --remote-debugging-port=#{port} --headless",
+      @pid = Process.spawn "chrome --remote-debugging-port=#{port} --headless --remote-allow-origins=*",
           out: File::NULL, err: File::NULL
     end
 
